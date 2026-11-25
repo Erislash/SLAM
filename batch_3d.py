@@ -8,7 +8,7 @@ graph: gtsam.NonlinearFactorGraph = gtsam.NonlinearFactorGraph()
 
 pose0 = vertexes[0]
 R0 = gtsam.Rot3(pose0.qw, pose0.qx, pose0.qy, pose0.qz)
-t0 = [pose0.x, pose0.y, pose0.z]
+t0 = gtsam.Point3(pose0.x, pose0.y, pose0.z)
 
 prior_noise: gtsam.noiseModel.Diagonal = gtsam.noiseModel.Diagonal.Sigmas([0.001, 0.001, 0.001, 0.001, 0.001, 0.001])
 
@@ -24,7 +24,7 @@ graph.add(prior_factor)
 for edge in edges:
     noise:gtsam.noiseModel.Gaussian = gtsam.noiseModel.Gaussian.Information(edge.weights)
     R_edge = gtsam.Rot3(edge.qw, edge.qx, edge.qy, edge.qz)
-    t_edge = [edge.x, edge.y, edge.z]
+    t_edge = gtsam.Point3(edge.x, edge.y, edge.z)
     graph.add(gtsam.BetweenFactorPose3(edge.id_from, edge.id_to, gtsam.Pose3(R_edge, t_edge), noise))
 
 print(graph.size())
@@ -34,7 +34,7 @@ init = gtsam.Values()
 
 for vertex in vertexes:
     R_vertex = gtsam.Rot3(vertex.qw, vertex.qx, vertex.qy, vertex.qz)
-    t_vertex = [vertex.x, vertex.y, vertex.z]
+    t_vertex = gtsam.Point3(vertex.x, vertex.y, vertex.z)
     init.insert(vertex.id, gtsam.Pose3(R_vertex, t_vertex))
 
 # print(init.size())

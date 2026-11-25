@@ -15,7 +15,7 @@ for vertex in sorted(vertexes):
         prior_noise: gtsam.noiseModel.Diagonal = gtsam.noiseModel.Diagonal.Sigmas([0.001, 0.001, 0.001, 0.001, 0.001, 0.001])
 
         R_vertex: gtsam.Rot3 = gtsam.Rot3(vertex.qw, vertex.qx, vertex.qy, vertex.qz)
-        t_vertex = [vertex.x, vertex.y, vertex.z]
+        t_vertex: gtsam.Point3 = gtsam.Point3(vertex.x, vertex.y, vertex.z)
 
         prior_pose: gtsam.Pose3 = gtsam.Pose3(R_vertex, t_vertex)
 
@@ -34,7 +34,7 @@ for vertex in sorted(vertexes):
         if edge.id_to == vertex.id:
             noise:gtsam.noiseModel.Gaussian = gtsam.noiseModel.Gaussian.Information(edge.weights)
             R_edge = gtsam.Rot3(edge.qw, edge.qx, edge.qy, edge.qz)
-            t_edge = [edge.x, edge.y, edge.z]
+            t_edge = gtsam.Point3(edge.x, edge.y, edge.z)
             graph.add(gtsam.BetweenFactorPose3(edge.id_from, edge.id_to, gtsam.Pose3(R_edge, t_edge), noise))
 
     isam.update(graph, init)
